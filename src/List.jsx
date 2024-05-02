@@ -12,7 +12,7 @@ function List() {
     e.preventDefault();
     const fetchData = async () => {
       try {
-        // Construct URL using '/sightings?year=2020&month=5' format
+        // Construct URL using '/sightings?year=2020&month=5'format
         const sightings = await axios.get(
           `${BACKEND_URL}/sightings?${filterYear ? `year=${filterYear}` : ""}${
             filterYear && filterMonth ? "&" : ""
@@ -38,6 +38,22 @@ function List() {
     };
     fetchData();
   }, []);
+
+  const sortList = (order) => {
+    if (order === "ascending") {
+      setSightingsData(
+        [...sightingsData].sort(
+          (a, b) => a["REPORT_NUMBER"] - b["REPORT_NUMBER"]
+        )
+      );
+    } else if (order === "descending") {
+      setSightingsData(
+        [...sightingsData].sort(
+          (a, b) => b["REPORT_NUMBER"] - a["REPORT_NUMBER"]
+        )
+      );
+    }
+  };
 
   return (
     <>
@@ -72,6 +88,18 @@ function List() {
         </label>
         <button type="submit">Search</button>
       </form>
+      <p style={{ color: "lightblue" }}>Sort by Report Number</p>
+      <div
+        style={{
+          marginBottom: "2rem",
+          display: "flex",
+          gap: "1rem",
+          justifyContent: "center",
+        }}
+      >
+        <button onClick={() => sortList("ascending")}>Ascending</button>
+        <button onClick={() => sortList("descending")}>Descending</button>
+      </div>
       {sightingsData.length === 0 && <p>No results found.</p>}
       {sightingsData.map((sighting, index) => {
         return (
